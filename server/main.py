@@ -1,7 +1,20 @@
 from fastapi import FastAPI;
+from contextlib import asynccontextmanager
+
+from core.db import create_db_and_tables
+from middleware import middleware
 
 
-app = FastAPI()
+@asynccontextmanager
+async def lifespan(app:FastAPI):
+    print("connected to db")
+    create_db_and_tables()
+    yield
+    print("shutting down")
+
+app = FastAPI(lifespan=lifespan)
+
+@app.middleware("http")(middleware)
 
 @app.get("/")
 def home():
