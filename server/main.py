@@ -14,8 +14,6 @@ async def lifespan(app:FastAPI):
 
 app = FastAPI(lifespan=lifespan)
 
-@app.middleware("http")(middleware)
-
 @app.get("/")
 def home():
     return {"message":"this is home page"}

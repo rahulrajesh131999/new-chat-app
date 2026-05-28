@@ -1,6 +1,6 @@
 from sqlmodel import SQLModel, Field
 from sqlalchemy import DateTime
-from pydantic import EmailStr
+from pydantic import EmailStr, BaseModel
 from datetime import datetime, timezone
 import uuid
 
@@ -25,6 +25,14 @@ class User(UserBase, table=True):
         default_factory=get_date_utc(), 
         sa_type=DateTime(timezone=True)
         )
+
+class UserRead(UserBase):
+    id: uuid.UUID
+    created_at : datetime
+
+class UserLogin(BaseModel):
+    email : EmailStr
+    password : str
     
 # conversation
 

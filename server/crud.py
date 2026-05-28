@@ -6,7 +6,7 @@ from sqlalchemy.exc import SQLAlchemyError
 
 # --------------------------User---------------------------------------------------------------
 
-async def create_user(session:Session, user:UserSecure):
+async def create_user(*,session:Session, user:UserSecure):
     db_object = User.model_validate(
         user, update={"hashed_password", hash_password(plain_password=user.password)}
     )
