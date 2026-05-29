@@ -6,6 +6,7 @@ class Settings(BaseSettings):
     ACCESS_TOKEN_EXPIRE_DAYS : int = 28
     JWT_SECRET : str
     JWL_ALGORITHM : str
+    DUMMY_HASH : str = "2d568b4c94e9e3831741baee8e643431"
 
     model_config = SettingsConfigDict(env_file=".env.local")
 
