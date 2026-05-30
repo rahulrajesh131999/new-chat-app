@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, status, Cookie, Response
+from fastapi import APIRouter, HTTPException, status, Cookie, Response, Query
 from typing import Annotated
 from fastapi.responses import JSONResponse
 from sqlmodel import Session, select
@@ -93,3 +93,38 @@ async def logout(response:Response):
     return JSONResponse(
         content={"message":"logged out successfully"}
     )
+
+
+# get all users except current user
+
+@router.get("/getusers")
+async def get_users_except_currentuser(session:Session,user: Current_User , offset:int = Query(0,ge=0), limit:int= Query(10, ge=1) ):
+    
+    if user:
+        userId = user.id
+    else:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="User not found"
+        )
+    
+    # .all() returns a python list
+    all_users = session.exec(select(User).where(User.id != userId).order_by(User.id)).offset(offset).limit(limit).all()
+
+    if not all_users:
+        return {"message":"no users registered"}
+    
+    return all_users
+
+
+# current user details
+
+@router.get("/me")
+async def get_user(session:Session, user:Current_User):
+
+    safe_user = UserRead.model_validate(user).model_dump(mode="json")
+
+    return JSONResponse(
+        content={"user":safe_user}
+    )
+
+    return safe_user

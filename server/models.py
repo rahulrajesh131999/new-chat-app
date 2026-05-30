@@ -33,6 +33,9 @@ class UserRead(UserBase):
 class UserLogin(BaseModel):
     email : EmailStr
     password : str
+
+class UserId(BaseModel):
+    id : uuid.UUID
     
 # conversation
 

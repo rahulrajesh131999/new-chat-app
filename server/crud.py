@@ -1,7 +1,7 @@
 from sqlmodel import Session, select
-from models import User, UserSecure
+from models import User, UserSecure, UserId, Conversation, Conversation_Member
 from core.security import hash_password
-from fastapi import HTTPException
+from fastapi import HTTPException, status
 from sqlalchemy.exc import SQLAlchemyError
 
 from core.security import verify_password
@@ -38,3 +38,29 @@ async def authenticate(session:Session, email:str, password:str):
         return False
     
     return user
+
+
+
+# conversation controllers
+
+async def create_private_conversation(session:Session, user:User, recieverId:UserId):
+
+    if not recieverId:
+        raise HTTPException(
+            status_code= status.HTTP_400_BAD_REQUEST, detail="reciever id not provided"
+        )
+    
+    reciever = await session.exec(select(User).where(User.id == recieverId)).first()
+
+    if not reciever:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST, detail="reviever not found"
+        )
+    
+    # check if a conversation already exists 
+
+    conversation_exists = await session.exec(select(Conversation))
+    
+    new_private_conversation = await session
+    
+
